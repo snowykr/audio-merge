@@ -1,0 +1,197 @@
+# ==================================================
+# Python Audio Merge Project - Custom .gitignore
+# ==================================================
+
+# 1. Python 관련 파일들
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 2. 가상환경 (Virtual Environment)
+# ==================================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+audio_merge_env/
+
+# 3. IDE 및 에디터 설정 파일
+# =============================
+.vscode/
+.idea/
+.claude/
+.cursor/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 4. 테스트 및 커버리지
+# ======================
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+.coverage.*
+htmlcov/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# 5. 오디오 파일 관련 (프로젝트 특화)
+# ===================================
+# 테스트용 샘플 파일들
+test_samples/
+sample_audio/
+audio_samples/
+
+# 생성된 출력 파일들
+merged.wav
+out.wav
+output.wav
+result.wav
+*_merged.wav
+*_output.wav
+
+# 변환 과정에서 생성되는 임시 파일들
+*_converted_*.wav
+temp_*.wav
+tmp_*.wav
+
+# 6. 로그 파일들 (logger_conf.py 기반)
+# =====================================
+*.log
+logs/
+audio_merge.log
+merge.log
+conversion.log
+concatenation.log
+
+# 7. 시스템 임시 파일들
+# =====================
+.tmp/
+tmp/
+temp/
+.cache/
+
+# 8. 프로젝트별 설정 파일들
+# =========================
+# 사용자별 오디오 설정
+audio_config.json
+user_settings.json
+*.config
+
+# Claude AI 개발 가이드 파일
+CLAUDE.md
+
+# 9. 개발 도구 관련
+# =================
+# mypy 캐시
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# black 캐시
+.black/
+
+# pytest 벤치마크
+.benchmarks/
+
+# 10. 문서 생성 파일들
+# ====================
+docs/_build/
+docs/build/
+.sphinx/
+
+# 11. 성능 프로파일링 파일들
+# ==========================
+*.prof
+*.profile
+cProfile.*
+
+# 12. FFmpeg 관련 임시 파일들
+# ===========================
+# pydub + ffmpeg 사용 시 생성되는 임시 파일들
+pydub_temp_*
+ffmpeg_temp_*
+
+# 13. 대용량 테스트 파일들
+# ========================
+# 2GB 이상 테스트용 대용량 파일들
+*_large_test.wav
+*_big_file.wav
+test_2gb.wav
+performance_test_*.wav
+
+# 14. 백업 파일들
+# ================
+*.bak
+*.backup
+*_backup.*
+*.orig
+
+# 15. 환경별 설정 파일들
+# ======================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# MCP (Model Context Protocol) 설정 파일
+# API 키 등 민감한 정보 포함
+.mcp.json
+
+# 16. 패키지 관리자 관련
+# ======================
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+
+# 17. 프로젝트 특화 제외 항목들
+# =============================
+# Cross-fade 테스트 결과물
+*_crossfade_*.wav
+
+# 다양한 포맷 테스트 파일들 (기획서 요구사항 기반)
+*_44100hz_*.wav
+*_48000hz_*.wav
+*_mono_*.wav
+*_stereo_*.wav
+*_16bit_*.wav
+*_24bit_*.wav
+
+# 메모리 프로파일링 결과
+memory_profile_*.txt
+memory_usage_*.log
+
+# ==============================================
+# 중요: 실제 작업용 오디오 파일들은 보존
+# (필요시 특정 파일은 강제 추가: git add -f)
+# ==============================================
