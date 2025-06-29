@@ -100,7 +100,28 @@ tmp/
 temp/
 .cache/
 
-# 8. 프로젝트별 설정 파일들
+# 8. Next.js 관련 파일들 (프론트엔드)
+# ===================================
+.next/
+.next/**
+.vercel/
+next-env.d.ts
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ESLint 캐시
+.eslintcache
+**/.eslintcache
+
+# Node.js 관련
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 9. 프로젝트별 설정 파일들
 # =========================
 # 사용자별 오디오 설정
 audio_config.json
@@ -110,8 +131,8 @@ user_settings.json
 # Claude AI 개발 가이드 파일
 CLAUDE.md
 
-# 9. 개발 도구 관련
-# =================
+# 10. 개발 도구 관련
+# ==================
 # mypy 캐시
 .mypy_cache/
 .dmypy.json
@@ -123,41 +144,41 @@ dmypy.json
 # pytest 벤치마크
 .benchmarks/
 
-# 10. 문서 생성 파일들
+# 11. 문서 생성 파일들
 # ====================
 docs/_build/
 docs/build/
 .sphinx/
 
-# 11. 성능 프로파일링 파일들
-# ==========================
+# 12. 성능 프로파일링 파일들
+# ===========================
 *.prof
 *.profile
 cProfile.*
 
-# 12. FFmpeg 관련 임시 파일들
-# ===========================
+# 13. FFmpeg 관련 임시 파일들
+# ============================
 # pydub + ffmpeg 사용 시 생성되는 임시 파일들
 pydub_temp_*
 ffmpeg_temp_*
 
-# 13. 대용량 테스트 파일들
-# ========================
+# 14. 대용량 테스트 파일들
+# =========================
 # 2GB 이상 테스트용 대용량 파일들
 *_large_test.wav
 *_big_file.wav
 test_2gb.wav
 performance_test_*.wav
 
-# 14. 백업 파일들
-# ================
+# 15. 백업 파일들
+# =================
 *.bak
 *.backup
 *_backup.*
 *.orig
 
-# 15. 환경별 설정 파일들
-# ======================
+# 16. 환경별 설정 파일들
+# =======================
 .env
 .env.local
 .env.development
@@ -168,14 +189,14 @@ performance_test_*.wav
 # API 키 등 민감한 정보 포함
 .mcp.json
 
-# 16. 패키지 관리자 관련
-# ======================
+# 17. 패키지 관리자 관련
+# =======================
 pip-log.txt
 pip-delete-this-directory.txt
 .tox/
 
-# 17. 프로젝트 특화 제외 항목들
-# =============================
+# 18. 프로젝트 특화 제외 항목들
+# ==============================
 # Cross-fade 테스트 결과물
 *_crossfade_*.wav
 

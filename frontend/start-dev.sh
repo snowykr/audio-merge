@@ -11,16 +11,16 @@ echo ""
 echo "종료하려면 Ctrl+C를 눌러주세요."
 echo ""
 
-# 현재 디렉토리가 web-nextjs인지 확인
+# 현재 디렉토리가 frontend인지 확인
 if [ ! -f "package.json" ]; then
-    echo "❌ 오류: web-nextjs 디렉토리에서 실행해주세요."
+    echo "❌ 오류: frontend 디렉토리에서 실행해주세요."
     exit 1
 fi
 
 # FastAPI 백엔드 디렉토리 확인
-if [ ! -d "../web/app" ]; then
+if [ ! -d "../backend" ]; then
     echo "❌ 오류: 백엔드 디렉토리를 찾을 수 없습니다."
-    echo "   경로: ../web/app 확인해주세요."
+    echo "   경로: ../backend 확인해주세요."
     exit 1
 fi
 
