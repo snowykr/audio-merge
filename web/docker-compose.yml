@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - FASTAPI_DEBUG=true
+      - FASTAPI_REDIS_URL=redis://redis:6379/0
+      - FASTAPI_CELERY_BROKER_URL=redis://redis:6379/0
+      - FASTAPI_CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - FASTAPI_UPLOAD_DIR=/tmp/audio_merge
+    depends_on:
+      - redis
+    volumes:
+      - ./tmp:/tmp/audio_merge
+      - ../:/app  # 프로젝트 루트 마운트로 audio_merge 모듈 포함
+    networks:
+      - audio-merge-network
+
+  worker:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    command: celery -A web.app.main:celery worker --loglevel=info --concurrency=2
+    environment:
+      - FASTAPI_REDIS_URL=redis://redis:6379/0
+      - FASTAPI_CELERY_BROKER_URL=redis://redis:6379/0
+      - FASTAPI_CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - FASTAPI_UPLOAD_DIR=/tmp/audio_merge
+    depends_on:
+      - redis
+    volumes:
+      - ./tmp:/tmp/audio_merge
+      - ../:/app  # 프로젝트 루트 마운트로 audio_merge 모듈 포함
+    networks:
+      - audio-merge-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - audio-merge-network
+
+  flower:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    command: celery -A web.app.main:celery flower --port=5555
+    ports:
+      - "5555:5555"
+    environment:
+      - FASTAPI_REDIS_URL=redis://redis:6379/0
+      - FASTAPI_CELERY_BROKER_URL=redis://redis:6379/0
+      - FASTAPI_CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - worker
+    networks:
+      - audio-merge-network
+
+volumes:
+  redis-data:
+
+networks:
+  audio-merge-network:
+    driver: bridge
