@@ -160,3 +160,8 @@ class WaveValidator:
         )
 
         return formats, stats
+
+    # 테스트 및 외부 사용성을 위해 parse_wave_format 함수를 공개 메서드로 래핑합니다.
+    def parse_wave_format(self, file_path: Union[str, Path]):
+        """단일 WAV 파일의 fmt chunk를 파싱하여 WaveFormat 정보를 반환합니다."""
+        return parse_wave_format(Path(file_path))

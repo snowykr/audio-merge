@@ -1,8 +1,7 @@
 import logging
 import tempfile
 from pathlib import Path
-
-from logger_conf import setup_logger, get_logger
+from audio_merge.utils import setup_logger, get_logger
 
 
 class TestLoggerConf:

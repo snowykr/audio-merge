@@ -13,11 +13,9 @@ export function FileUpload() {
   const {
     files,
     isDragging,
-    addFiles,
     addFilesWithValidation,
     removeFile,
     setIsDragging,
-    updateFileValidation
   } = useAppStore()
   
   const fileInputRef = useRef<HTMLInputElement>(null)

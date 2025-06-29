@@ -41,7 +41,7 @@ class WaveWriter:
                 riff_header = f.read(12)
 
                 if len(riff_header) != 12:
-                    raise WriteError("RIFF 헤더를 읽을 수 없습니다")
+                    raise WriteError("유효하지 않은 RIFF 헤더")
 
                 if riff_header[:4] != b"RIFF":
                     raise WriteError("유효하지 않은 RIFF 헤더입니다")

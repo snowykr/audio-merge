@@ -5,6 +5,7 @@
 - 예외 클래스들 (exceptions.py)
 - WAV 파일 처리 유틸리티 (wav_utils.py)  
 - 공통 유틸리티 함수들 (common.py)
+- 로깅 유틸리티 (logging.py)
 """
 
 from .exceptions import (
@@ -31,12 +32,16 @@ from .common import (
     validate_output_path,
     format_file_size,
     format_duration,
-    get_logger,
     safe_file_operation,
     calculate_audio_duration,
     calculate_data_size,
     cleanup_temp_files,
     ensure_directory,
+)
+
+from .logging import (
+    get_logger,
+    setup_logger,
 )
 
 __all__ = [
@@ -62,10 +67,13 @@ __all__ = [
     "validate_output_path",
     "format_file_size",
     "format_duration",
-    "get_logger",
     "safe_file_operation",
     "calculate_audio_duration",
     "calculate_data_size",
     "cleanup_temp_files",
     "ensure_directory",
+    
+    # 로깅 유틸리티
+    "get_logger",
+    "setup_logger",
 ]

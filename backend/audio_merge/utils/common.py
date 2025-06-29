@@ -4,7 +4,6 @@
 프로젝트 전반에서 사용되는 공통 기능들을 제공합니다:
 - Path 처리 및 파일 검증
 - 파일 크기 및 시간 포맷팅
-- 로깅 유틸리티
 """
 
 import logging
@@ -131,19 +130,6 @@ def format_duration(seconds: float) -> str:
         return f"{hours}시간 {minutes}분 {remaining_seconds:.1f}초"
 
 
-def get_logger(name: str = "audio_merge") -> logging.Logger:
-    """
-    기존에 설정된 로거를 가져옵니다.
-    
-    Args:
-        name: 로거 이름
-        
-    Returns:
-        로거 객체
-    """
-    return logging.getLogger(name)
-
-
 def safe_file_operation(operation_name: str, file_path: Union[str, Path]):
     """
     파일 작업을 안전하게 수행하기 위한 컨텍스트 매니저 데코레이터입니다.
@@ -153,6 +139,7 @@ def safe_file_operation(operation_name: str, file_path: Union[str, Path]):
         file_path: 대상 파일 경로
     """
     from contextlib import contextmanager
+    from .logging import get_logger
     
     @contextmanager
     def _safe_operation():
@@ -211,6 +198,7 @@ def cleanup_temp_files(temp_files: list[Path], logger: Optional[logging.Logger] 
         logger: 로거 객체 (None이면 기본 로거 사용)
     """
     if logger is None:
+        from .logging import get_logger
         logger = get_logger()
         
     for temp_file in temp_files:

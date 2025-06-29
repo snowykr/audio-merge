@@ -10,7 +10,7 @@ import sys
 import time
 from pathlib import Path
 
-from logger_conf import setup_logger
+from audio_merge.utils import setup_logger
 from audio_merge.core import WaveValidator, WaveConverter, WaveConcatenator, WaveWriter
 from audio_merge.cli import parse_arguments, get_files_interactive
 from audio_merge.utils import (

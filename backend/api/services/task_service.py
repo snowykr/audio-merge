@@ -3,32 +3,12 @@ import json
 import asyncio
 from datetime import datetime
 from typing import List, Dict, Any, cast
-from celery import Celery
 import redis
 
 from ..config import settings
+from ..main import celery  # main.py에서 celery 인스턴스 import
 from .merge_service import MergeService
 from .file_service import FileService
-
-# Celery 앱 생성
-celery_app = Celery(
-    "audio_merge_worker",
-    broker=settings.celery_broker_url,
-    backend=settings.celery_result_backend
-)
-
-celery_app.conf.update(
-    task_serializer="json",
-    accept_content=["json"],
-    result_serializer="json",
-    timezone="UTC",
-    enable_utc=True,
-    task_time_limit=settings.task_time_limit,
-    task_soft_time_limit=settings.task_soft_time_limit,
-    worker_prefetch_multiplier=1,
-    task_acks_late=True,
-    task_reject_on_worker_lost=True,
-)
 
 # Redis 클라이언트 (동기식)
 redis_client = redis.from_url(settings.redis_url)
@@ -36,7 +16,7 @@ merge_service = MergeService()
 file_service = FileService()
 
 
-@celery_app.task(bind=True)
+@celery.task(bind=True)
 def start_merge_task(self, task_id: str, file_paths: List[str], options: Dict):
     """
     오디오 병합 작업을 시작합니다.
@@ -174,7 +154,7 @@ def get_task_status(task_id: str) -> Dict:
         }
 
 
-@celery_app.task
+@celery.task
 def cleanup_expired_files():
     """만료된 파일들을 정리하는 정기 작업입니다."""
     try:
@@ -222,7 +202,7 @@ def cleanup_expired_files():
         return {"cleaned": False, "message": f"정리 작업 실패: {str(e)}"}
 
 
-@celery_app.task
+@celery.task
 def cleanup_redis_tasks():
     """만료된 Redis 작업 데이터를 정리합니다."""
     try:
