@@ -23,11 +23,15 @@ async def check_disk_space() -> bool:
     ensure_upload_directory()
     disk_usage = psutil.disk_usage(settings.upload_dir)
     usage_percent = disk_usage.used / disk_usage.total
-    
-    if usage_percent > settings.disk_usage_threshold:
+    free_space_gb = disk_usage.free / (1024 ** 3)
+
+    if usage_percent > settings.disk_usage_threshold and free_space_gb < settings.min_free_space_gb:
         raise HTTPException(
             status_code=status.HTTP_507_INSUFFICIENT_STORAGE,
-            detail=f"디스크 사용률이 {usage_percent:.1%}로 임계값을 초과했습니다."
+            detail=(
+                f"디스크 사용률 {usage_percent:.1%}, "
+                f"여유 공간 {free_space_gb:.1f}GB (최소 {settings.min_free_space_gb}GB 필요)"
+            )
         )
     return True
 

@@ -14,7 +14,7 @@ def create_celery() -> Celery:
         "audio_merge_worker",
         broker=settings.celery_broker_url,
         backend=settings.celery_result_backend,
-        include=["backend.api.services.task_service"],
+        include=["api.services.task_service"],
     )
     
     celery_app.conf.update(
