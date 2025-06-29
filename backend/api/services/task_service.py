@@ -6,7 +6,7 @@ from typing import List, Dict, Any, cast
 import redis
 
 from ..config import settings
-from ..main import celery  # main.py에서 celery 인스턴스 import
+from ..celery_app import celery  # celery_app.py에서 celery 인스턴스 import
 from .merge_service import MergeService
 from .file_service import FileService
 

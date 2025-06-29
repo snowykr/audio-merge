@@ -3,35 +3,10 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import redis.asyncio as redis
-from celery import Celery
 
 from .config import settings
+from .celery_app import celery
 from .api.routes import router as api_router
-
-
-def create_celery() -> Celery:
-    # `include` 옵션을 지정하여 Celery가 작업 모듈을 확실히 로드하도록 합니다.
-    celery_app = Celery(
-        "audio_merge_worker",
-        broker=settings.celery_broker_url,
-        backend=settings.celery_result_backend,
-        include=["backend.api.services.task_service"],
-    )
-    
-    celery_app.conf.update(
-        task_serializer="json",
-        accept_content=["json"],
-        result_serializer="json",
-        timezone="UTC",
-        enable_utc=True,
-        task_time_limit=settings.task_time_limit,
-        task_soft_time_limit=settings.task_soft_time_limit,
-        worker_prefetch_multiplier=1,
-        task_acks_late=True,
-        task_reject_on_worker_lost=True,
-    )
-    
-    return celery_app
 
 
 def create_app() -> FastAPI:
@@ -76,5 +51,4 @@ def create_app() -> FastAPI:
 
 
 # Global instances
-celery = create_celery()
 app = create_app()

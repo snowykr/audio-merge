@@ -25,7 +25,7 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
-    command: celery -A backend.api.main:celery worker --loglevel=info --concurrency=2
+    command: celery -A backend.api.celery_app:celery worker --loglevel=info --concurrency=2
     environment:
       - FASTAPI_REDIS_URL=redis://redis:6379/0
       - FASTAPI_CELERY_BROKER_URL=redis://redis:6379/0
@@ -52,7 +52,7 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
-    command: celery -A backend.api.main:celery flower --port=5555
+    command: celery -A backend.api.celery_app:celery flower --port=5555
     ports:
       - "5555:5555"
     environment:

@@ -1,0 +1,26 @@
+{
+  "name": "python-audio-merge",
+  "version": "1.0.0",
+  "description": "Python Audio Merge Tool - Full Stack Application",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "dev:all": "npm run dev:all --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "frontend": "npm run dev --workspace=frontend",
+    "backend": "cd backend && source .venv/bin/activate && PYTHONPATH=. python -m uvicorn api.main:app --reload --port 8000",
+    "setup": "npm install --workspace=frontend",
+    "test:backend": "cd backend && pytest",
+    "test:frontend": "npm run lint --workspace=frontend",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+} 
