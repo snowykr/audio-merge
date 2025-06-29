@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # 의존성 파일 복사 및 설치
-COPY web/requirements-web.txt .
-RUN pip install --no-cache-dir -r requirements-web.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # 프로젝트 전체 복사
 COPY . .
@@ -28,4 +28,4 @@ ENV FASTAPI_HOST=0.0.0.0
 ENV FASTAPI_PORT=8000
 
 # 시작 명령
-CMD ["uvicorn", "web.app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

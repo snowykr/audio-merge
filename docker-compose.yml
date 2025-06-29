@@ -3,8 +3,8 @@ version: '3.8'
 services:
   web:
     build:
-      context: ..
-      dockerfile: web/Dockerfile
+      context: backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
@@ -16,16 +16,16 @@ services:
     depends_on:
       - redis
     volumes:
-      - ./tmp:/tmp/audio_merge
-      - ../:/app  # 프로젝트 루트 마운트로 audio_merge 모듈 포함
+      - ./backend/tmp:/tmp/audio_merge
+      - ./backend:/app
     networks:
       - audio-merge-network
 
   worker:
     build:
-      context: ..
-      dockerfile: web/Dockerfile
-    command: celery -A web.app.main:celery worker --loglevel=info --concurrency=2
+      context: backend
+      dockerfile: Dockerfile
+    command: celery -A backend.api.main:celery worker --loglevel=info --concurrency=2
     environment:
       - FASTAPI_REDIS_URL=redis://redis:6379/0
       - FASTAPI_CELERY_BROKER_URL=redis://redis:6379/0
@@ -34,8 +34,8 @@ services:
     depends_on:
       - redis
     volumes:
-      - ./tmp:/tmp/audio_merge
-      - ../:/app  # 프로젝트 루트 마운트로 audio_merge 모듈 포함
+      - ./backend/tmp:/tmp/audio_merge
+      - ./backend:/app
     networks:
       - audio-merge-network
 
@@ -50,9 +50,9 @@ services:
 
   flower:
     build:
-      context: ..
-      dockerfile: web/Dockerfile
-    command: celery -A web.app.main:celery flower --port=5555
+      context: backend
+      dockerfile: Dockerfile
+    command: celery -A backend.api.main:celery flower --port=5555
     ports:
       - "5555:5555"
     environment:

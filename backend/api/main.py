@@ -1,10 +1,7 @@
 import os
 from pathlib import Path
 from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
 import redis.asyncio as redis
 from celery import Celery
 
@@ -18,7 +15,7 @@ def create_celery() -> Celery:
         "audio_merge_worker",
         broker=settings.celery_broker_url,
         backend=settings.celery_result_backend,
-        include=["web.app.services.task_service"],
+        include=["backend.api.services.task_service"],
     )
     
     celery_app.conf.update(
@@ -54,19 +51,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     
-    # Static files - 절대 경로 사용
-    current_dir = Path(__file__).parent
-    static_dir = current_dir / "static"
-    template_dir = current_dir / "templates"
-    
-    # static 디렉토리가 없으면 생성
-    static_dir.mkdir(exist_ok=True)
-    
-    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
-    
-    # Templates
-    templates = Jinja2Templates(directory=str(template_dir))
-    
     # Include API routes
     app.include_router(api_router, prefix="/api")
     
@@ -79,10 +63,14 @@ def create_app() -> FastAPI:
     async def shutdown_event():
         await app.state.redis.close()
     
-    # Root route
-    @app.get("/", response_class=HTMLResponse)
-    async def root(request: Request):
-        return templates.TemplateResponse("index.html", {"request": request})
+    # Root route - API health check
+    @app.get("/")
+    async def root():
+        return {
+            "service": "Audio Merge API",
+            "status": "ok",
+            "frontend": "http://localhost:3000"
+        }
     
     return app
 

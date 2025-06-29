@@ -1,199 +1,240 @@
-# Audio Merge - WAV 파일 병합 도구
+# Audio Merge Tool
 
-여러 개의 WAV 파일을 하나로 병합하는 Python 명령줄 도구입니다. 스트리밍 방식으로 대용량 파일도 효율적으로 처리할 수 있으며, 자동 포맷 변환과 크로스페이드 기능을 제공합니다.
+Python으로 구현된 고성능 WAV 파일 병합 도구입니다. 여러 오디오 파일을 무손실로 결합하고, 포맷 변환 및 크로스페이드 효과를 지원합니다.
 
-## 주요 기능
+## 📁 프로젝트 구조
 
-- ✅ **무손실 병합**: PCM 포맷 WAV 파일을 품질 손실 없이 병합
-- ✅ **자동 포맷 변환**: 서로 다른 포맷의 파일을 자동으로 변환하여 병합
-- ✅ **스트리밍 처리**: 메모리 효율적인 스트리밍 방식으로 대용량 파일 처리
-- ✅ **크로스페이드**: 파일 간 부드러운 전환을 위한 페이드 효과
-- ✅ **진행률 표시**: 대용량 파일 처리 시 진행률 로깅
-- ✅ **유연한 사용**: CLI 모드와 Interactive 모드 지원
+```
+python-audio-merge/
+├── backend/              # Python 백엔드
+│   ├── audio_merge/      # 핵심 오디오 처리 로직
+│   ├── api/              # FastAPI 웹 서버
+│   ├── main.py           # CLI 진입점
+│   ├── tests/            # 단위 테스트
+│   └── requirements.txt  # Python 의존성
+├── frontend/             # Next.js 프론트엔드
+│   ├── src/              # React 컴포넌트 및 페이지
+│   └── package.json      # Node.js 의존성
+└── docker-compose.yml    # 컨테이너 오케스트레이션
+```
 
-## 설치
+## ✨ 주요 기능
 
-### 사전 요구사항
+- **무손실 병합**: PCM 데이터를 직접 처리하여 품질 손실 없이 병합
+- **자동 포맷 변환**: 샘플레이트, 채널, 비트깊이가 다른 파일들을 자동으로 통일
+- **크로스페이드**: 파일 간 자연스러운 전환을 위한 크로스페이드 효과 지원
+- **스트리밍 처리**: 큰 파일도 메모리 효율적으로 처리
+- **웹 인터페이스**: 직관적인 Next.js 기반 웹 UI
+- **REST API**: FastAPI 기반의 완전한 백엔드 API
+- **실시간 진행률**: Server-Sent Events를 통한 실시간 처리 상태 확인
 
-- Python 3.8 이상
-- FFmpeg (시스템에 설치되어 있어야 함)
+## 🚀 빠른 시작
 
-### 설치 방법
+### 1. 전체 개발 환경 (권장)
 
 ```bash
 # 저장소 클론
-git clone https://github.com/yourusername/python-audio-merge.git
+git clone <repository-url>
 cd python-audio-merge
 
-# 가상환경 생성 및 활성화
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Python 가상환경 설정
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
-# 의존성 설치
+# 백엔드 의존성 설치
+cd backend
 pip install -r requirements.txt
+cd ..
+
+# 프론트엔드 의존성 설치
+cd frontend
+npm install
+
+# 전체 개발 서버 실행 (프론트+백엔드 동시)
+npm run dev:all
 ```
 
-## 사용 방법
+웹 브라우저에서 http://localhost:3000 접속
 
-### Command-line 모드
+### 2. CLI 도구만 사용
 
 ```bash
-# 기본 사용법
-python main.py file1.wav file2.wav file3.wav
+# 백엔드 디렉토리로 이동
+cd backend
 
-# 옵션 지정
-python main.py --output merged.wav --auto-convert --fade 500 file1.wav file2.wav
+# Interactive 모드
+python main.py
 
-# 전체 옵션 보기
-python main.py --help
+# Command-line 모드
+python main.py file1.wav file2.wav --output merged.wav --auto-convert
 ```
 
-### Interactive 모드
+### 3. Docker로 실행
 
 ```bash
-# 파일을 지정하지 않으면 대화형 모드로 실행
+# 전체 스택 실행 (백엔드 + Redis + Worker)
+docker compose up -d
+
+# API 서버: http://localhost:8000
+# Flower 모니터링: http://localhost:5555
+```
+
+## 📖 사용법
+
+### 웹 인터페이스
+
+1. http://localhost:3000 접속
+2. 오디오 파일들을 드래그 앤 드롭 또는 클릭하여 업로드
+3. 병합 옵션 설정 (크로스페이드, 버퍼 크기 등)
+4. "병합 시작" 클릭
+5. 실시간으로 진행률 확인
+6. 완료 후 결과 파일 다운로드
+
+### CLI 인터페이스
+
+```bash
+# 기본 병합
+python main.py audio1.wav audio2.wav audio3.wav
+
+# 옵션과 함께 병합
+python main.py *.wav \
+  --output final_mix.wav \
+  --auto-convert \
+  --fade 500 \
+  --verbose
+
+# Interactive 모드
 python main.py
 ```
 
-### 옵션 설명
-
-- `-o, --output`: 출력 파일 경로 (기본: merged.wav)
-- `--auto-convert`: 포맷이 다른 파일 자동 변환
-- `--fade`: 파일 간 크로스페이드 길이 (밀리초)
-- `--buffer-size`: 스트리밍 버퍼 크기 (바이트, 기본: 65536)
-- `--verbose`: 상세 로그 출력
-- `--log-file`: 로그 파일 경로
-
-## 아키텍처
-
-```mermaid
-graph TB
-    subgraph "CLI Layer"
-        main[main.py]
-        parser[parser.py]
-        interactive[interactive.py]
-    end
-    
-    subgraph "Core Layer"
-        validator[validator.py<br/>파일 검증]
-        converter[converter.py<br/>포맷 변환]
-        concatenator[concatenator.py<br/>파일 병합]
-        writer[writer.py<br/>헤더 완성]
-    end
-    
-    subgraph "Utils Layer"
-        common[common.py<br/>공통 유틸리티]
-        wav_utils[wav_utils.py<br/>WAV 처리]
-        exceptions[exceptions.py<br/>예외 클래스]
-    end
-    
-    main --> parser
-    main --> interactive
-    main --> validator
-    validator --> converter
-    converter --> concatenator
-    concatenator --> writer
-    
-    validator --> wav_utils
-    converter --> exceptions
-    concatenator --> wav_utils
-    writer --> common
-    
-    style main fill:#f9f,stroke:#333,stroke-width:4px
-    style validator fill:#bbf,stroke:#333,stroke-width:2px
-    style converter fill:#bbf,stroke:#333,stroke-width:2px
-    style concatenator fill:#bbf,stroke:#333,stroke-width:2px
-    style writer fill:#bbf,stroke:#333,stroke-width:2px
-```
-
-### 처리 흐름
-
-1. **파일 검증** (validator.py)
-   - WAV 파일 유효성 검사
-   - 포맷 정보 추출
-   - 포맷 일관성 확인
-
-2. **포맷 변환** (converter.py)
-   - 필요 시 자동 변환
-   - 최고 품질 포맷으로 통일
-   - 임시 파일 생성 및 관리
-
-3. **파일 병합** (concatenator.py)
-   - 스트리밍 방식 데이터 복사
-   - 크로스페이드 효과 적용
-   - 4GB 크기 제한 확인
-
-4. **헤더 완성** (writer.py)
-   - RIFF/data 청크 크기 업데이트
-   - 파일 구조 검증
-
-## 예제
-
-### 간단한 병합
-```bash
-python main.py voice1.wav voice2.wav voice3.wav
-```
-
-### 다른 포맷 파일 병합
-```bash
-# 44.1kHz와 48kHz 파일을 자동 변환하여 병합
-python main.py --auto-convert track1_44100.wav track2_48000.wav
-```
-
-### 크로스페이드 적용
-```bash
-# 파일 간 500ms 크로스페이드
-python main.py --fade 500 intro.wav main.wav outro.wav
-```
-
-### 대용량 파일 처리
-```bash
-# 버퍼 크기를 늘려 성능 향상
-python main.py --buffer-size 262144 --verbose large1.wav large2.wav
-```
-
-## 개발
-
-### 테스트 실행
+### REST API
 
 ```bash
-# 전체 테스트
+# 파일 업로드
+curl -X POST "http://localhost:8000/api/upload" \
+  -F "files=@audio1.wav" \
+  -F "files=@audio2.wav"
+
+# 병합 시작
+curl -X POST "http://localhost:8000/api/merge" \
+  -H "Content-Type: application/json" \
+  -d '{"upload_id": "uuid", "options": {}}'
+
+# 진행률 확인
+curl "http://localhost:8000/api/status/{task_id}"
+
+# 실시간 진행률 (Server-Sent Events)
+curl "http://localhost:8000/api/events/{task_id}"
+```
+
+## 🔧 개발
+
+### 백엔드 개발
+
+```bash
+cd backend
+
+# 개발 서버 실행
+uvicorn api.main:app --reload --port 8000
+
+# 테스트 실행
 pytest
 
-# 커버리지 포함
-pytest --cov=audio_merge
-
-# 특정 테스트만
-pytest tests/test_converter.py -v
+# 코드 포맷팅
+black .
+flake8 .
 ```
 
-### 코드 품질 도구
+### 프론트엔드 개발
 
 ```bash
-# 코드 포맷팅
-black audio_merge tests
+cd frontend
+
+# 개발 서버 실행
+npm run dev
+
+# 빌드
+npm run build
 
 # 린팅
-flake8 audio_merge tests
-
-# 타입 체킹
-mypy audio_merge
+npm run lint
 ```
 
-## 제한사항
+### Celery Worker
 
-- WAV 파일만 지원 (MP3, FLAC 등은 지원하지 않음)
-- 4GB 크기 제한 (RIFF 포맷 한계)
-- PCM 포맷만 지원 (압축 코덱 미지원)
+```bash
+cd backend
 
-## 라이선스
+# Worker 실행
+celery -A api.main:celery worker --loglevel=info
 
-MIT License
+# Flower 모니터링
+celery -A api.main:celery flower
+```
 
-## 기여하기
+## 🛠 기술 스택
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request 
+### 백엔드
+- **Python 3.11+**
+- **FastAPI**: 고성능 웹 프레임워크
+- **Celery**: 비동기 작업 큐
+- **Redis**: 메시지 브로커 및 결과 저장소
+- **Pydub**: 오디오 파일 처리
+- **FFmpeg**: 오디오 코덱 지원
+
+### 프론트엔드
+- **Next.js 15**: React 기반 풀스택 프레임워크
+- **TypeScript**: 타입 안전성
+- **Tailwind CSS**: 유틸리티 기반 스타일링
+- **Radix UI**: 접근성 중심 컴포넌트
+- **Zustand**: 경량 상태 관리
+
+## 📋 시스템 요구사항
+
+- Python 3.11 이상
+- Node.js 18 이상
+- FFmpeg (시스템 설치 필요)
+- Redis (Docker 사용 시 자동 설치)
+
+### FFmpeg 설치
+
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install ffmpeg
+
+# macOS
+brew install ffmpeg
+
+# Windows
+# https://ffmpeg.org/download.html 에서 다운로드
+```
+
+## 🎯 지원 포맷
+
+- **입력**: WAV, MP3 (FFmpeg 지원 포맷)
+- **출력**: WAV (PCM)
+- **자동 변환**: 샘플레이트, 채널, 비트깊이 통일
+
+## 📊 성능
+
+- **메모리 효율**: 스트리밍 처리로 큰 파일도 안정적 처리
+- **속도**: 네이티브 바이너리 조작으로 고속 병합
+- **확장성**: Celery를 통한 분산 처리 지원
+
+## 🤝 기여하기
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 라이선스
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 감사의 말
+
+- [Pydub](https://github.com/jiaaro/pydub) - 오디오 처리 라이브러리
+- [FastAPI](https://fastapi.tiangolo.com/) - 현대적인 웹 프레임워크
+- [Next.js](https://nextjs.org/) - React 프레임워크 
