@@ -85,10 +85,16 @@ def validate_system_resources() -> Tuple[bool, List[str]]:
         # 디스크 공간 검사
         disk_usage = psutil.disk_usage(settings.upload_dir)
         usage_percent = disk_usage.used / disk_usage.total
-        
-        if usage_percent > settings.disk_usage_threshold:
-            errors.append(f"디스크 사용률이 {usage_percent:.1%}로 임계값을 초과했습니다.")
-        elif usage_percent > 0.7:  # 70% 이상이면 경고
+        free_space_gb = disk_usage.free / (1024 ** 3)
+
+        if usage_percent > settings.disk_usage_threshold and free_space_gb < settings.min_free_space_gb:
+            errors.append(
+                f"디스크 사용률 {usage_percent:.1%}, 여유 공간 {free_space_gb:.1f}GB "
+                f"(최소 {settings.min_free_space_gb}GB 필요)"
+            )
+        elif usage_percent > settings.disk_usage_threshold:
+            warnings.append(f"디스크 사용률이 {usage_percent:.1%}입니다.")
+        elif usage_percent > 0.7:
             warnings.append(f"디스크 사용률이 {usage_percent:.1%}입니다.")
         
         # 메모리 사용량 검사

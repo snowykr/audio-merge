@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     task_time_limit: int = 1800  # 30 minutes
     task_soft_time_limit: int = 1500  # 25 minutes
     disk_usage_threshold: float = 0.95
+    # 디스크 절대 여유 공간 하한 (GB)
+    min_free_space_gb: int = 10
     
     # File Settings
     allowed_extensions: set = {'.wav', '.mp3'}
