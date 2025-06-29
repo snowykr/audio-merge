@@ -18,7 +18,10 @@ async def get_redis(request: Request) -> redis.Redis:
 
 async def check_disk_space() -> bool:
     """디스크 공간을 확인하고 임계값을 초과하면 예외를 발생시킵니다."""
-    disk_usage = psutil.disk_usage('/tmp')
+    # settings.upload_dir 경로를 기준으로 디스크 사용률을 계산합니다.
+    # 업로드 경로가 존재하지 않을 수 있으므로, 사전에 디렉터리 생성이 필요합니다.
+    ensure_upload_directory()
+    disk_usage = psutil.disk_usage(settings.upload_dir)
     usage_percent = disk_usage.used / disk_usage.total
     
     if usage_percent > settings.disk_usage_threshold:

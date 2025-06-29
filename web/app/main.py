@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -11,10 +13,12 @@ from .api.routes import router as api_router
 
 
 def create_celery() -> Celery:
+    # `include` 옵션을 지정하여 Celery가 작업 모듈을 확실히 로드하도록 합니다.
     celery_app = Celery(
         "audio_merge_worker",
         broker=settings.celery_broker_url,
-        backend=settings.celery_result_backend
+        backend=settings.celery_result_backend,
+        include=["web.app.services.task_service"],
     )
     
     celery_app.conf.update(
@@ -50,11 +54,18 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     
-    # Static files
-    app.mount("/static", StaticFiles(directory="web/app/static"), name="static")
+    # Static files - 절대 경로 사용
+    current_dir = Path(__file__).parent
+    static_dir = current_dir / "static"
+    template_dir = current_dir / "templates"
+    
+    # static 디렉토리가 없으면 생성
+    static_dir.mkdir(exist_ok=True)
+    
+    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
     
     # Templates
-    templates = Jinja2Templates(directory="web/app/templates")
+    templates = Jinja2Templates(directory=str(template_dir))
     
     # Include API routes
     app.include_router(api_router, prefix="/api")
